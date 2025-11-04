@@ -1,7 +1,6 @@
 # 📚 Library Management App | نرم‌افزار مدیریت کتابخانه
 
-![App Screenshot](images/app_preview.png)
-> *(Add your screenshot to `/images/app_preview.png` — تصویر نمای کلی برنامه را در این مسیر قرار دهید)*
+![[App Screenshot](images/app_preview.png)](https://github.com/M0binMoharrami/LibraryApp/blob/main/Images/Capture.png)
 
 ---
 
