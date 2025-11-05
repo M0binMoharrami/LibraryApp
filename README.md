@@ -5,7 +5,7 @@
 ---
 
 The **Library Management App** is a cross-platform desktop application built with **Python (Flask)** and a responsive **HTML/Tailwind** frontend.  
-The frontend is written bu **AI** named **Canva.code**.
+The frontend is written by **AI** named **Canva.code**.
 It provides a simple way to manage books, students, and loan records — perfect for schools, libraries, or personal use.  
 The project runs completely offline, with a built-in database and a graphical desktop interface powered by **PyWebView**.  
 It can be packaged as a `.exe` for Windows or an executable for Linux using **PyInstaller**.
