@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>سیستم مدیریت کتابخانه مدرسه</title><!-- SDK scripts removed - now using Flask REST API -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../static/3.4.17.js"></script>
   <style>
         body {
             box-sizing: border-box;
@@ -234,7 +234,7 @@
                 }
             } catch (error) {
                 console.error('Error adding book:', error);
-                showMessage('خطا در ارتباط با سرور', 'error');
+                showMessage(error, 'error');
             }
 
             submitBtn.disabled = false;
@@ -259,24 +259,25 @@
 
         // Delete book
         async function deleteBook(bookId) {
-            try {
-                // Flask API Integration: DELETE to /api/books/delete/{book_id}
-                const response = await fetch(`/api/books/delete/${bookId}`, {
-                    method: 'DELETE'
-                });
+    try {
+        const response = await fetch(`/api/books/delete/${bookId}`, {
+            method: 'DELETE'
+        });
 
-                if (response.ok) {
-                    showMessage('کتاب حذف شد', 'success');
-                    await loadAllData(); // Refresh data
-                } else {
-                    const errorData = await response.json();
-                    showMessage(errorData.message || 'خطا در حذف کتاب', 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting book:', error);
-                showMessage('خطا در ارتباط با سرور', 'error');
-            }
+        const data = await response.json();
+
+        if (response.ok) {
+            showMessage(data.message || 'کتاب حذف شد', 'success');
+            await loadAllData(); // Refresh data
+        } else {
+            showMessage(data.error || data.message || 'خطا در حذف کتاب', 'error');
         }
+    } catch (error) {
+        console.error('Error deleting book:', error);
+        showMessage('خطا در ارتباط با سرور', 'error');
+    }
+}
+
 
         // ========================================
         // STUDENTS MANAGEMENT SECTION
@@ -314,7 +315,7 @@
                 }
             } catch (error) {
                 console.error('Error adding student:', error);
-                showMessage('خطا در ارتباط با سرور', 'error');
+                showMessage(error, 'error');
             }
 
             submitBtn.disabled = false;
@@ -339,25 +340,26 @@
         });
 
         // Delete student
-        async function deleteStudent(studentId) {
-            try {
-                // Flask API Integration: DELETE to /api/students/delete/{student_id}
-                const response = await fetch(`/api/students/delete/${studentId}`, {
-                    method: 'DELETE'
-                });
+async function deleteStudent(studentId) {
+    try {
+        const response = await fetch(`/api/students/delete/${studentId}`, {
+            method: 'DELETE'
+        });
 
-                if (response.ok) {
-                    showMessage('دانش‌آموز حذف شد', 'success');
-                    await loadAllData(); // Refresh data
-                } else {
-                    const errorData = await response.json();
-                    showMessage(errorData.message || 'خطا در حذف دانش‌آموز', 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting student:', error);
-                showMessage('خطا در ارتباط با سرور', 'error');
-            }
+        const data = await response.json();
+
+        if (response.ok) {
+            showMessage(data.message || 'دانش‌آموز حذف شد', 'success');
+            await loadAllData(); // Refresh data
+        } else {
+            showMessage(data.error || data.message || 'خطا در حذف دانش‌آموز', 'error');
         }
+    } catch (error) {
+        console.error('Error deleting student:', error);
+        showMessage('خطا در ارتباط با سرور', 'error');
+    }
+}
+
 
         // ========================================
         // LOANS MANAGEMENT SECTION
@@ -404,7 +406,7 @@
                 }
             } catch (error) {
                 console.error('Error adding loan:', error);
-                showMessage('خطا در ارتباط با سرور', 'error');
+                showMessage(error, 'error');
             }
 
             submitBtn.disabled = false;
@@ -451,7 +453,7 @@
                 }
             } catch (error) {
                 console.error('Error returning book:', error);
-                showMessage('خطا در ارتباط با سرور', 'error');
+                showMessage(error, 'error');
             }
         }
 

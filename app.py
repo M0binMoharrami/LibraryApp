@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
 from datetime import datetime, timedelta
 
 
@@ -12,12 +14,20 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
+
+
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
     author = db.Column(db.String(100))
     total_copies = db.Column(db.Integer, default=1)
     available_copies = db.Column(db.Integer, default=1)
+    loans = db.relationship('Loan', backref='book', cascade="all, delete-orphan", passive_deletes=True)
 
 
 class Student(db.Model):
@@ -25,17 +35,16 @@ class Student(db.Model):
     name = db.Column(db.String(120), nullable=False)
     national_id = db.Column(db.String(10), unique=True, nullable=False)
     email = db.Column(db.String(120))
+    loans = db.relationship('Loan', backref='student', cascade="all, delete-orphan", passive_deletes=True)
 
 
 class Loan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete='CASCADE'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete='CASCADE'), nullable=False)
     loan_date = db.Column(db.DateTime, default=datetime.utcnow)
     due_date = db.Column(db.DateTime)
     return_date = db.Column(db.DateTime)
-    book = db.relationship('Book', backref='loans')
-    student = db.relationship('Student', backref='loans')
 
 
 @app.route('/')
@@ -176,5 +185,6 @@ def list_loans():
 with app.app_context():
     db.create_all()
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
